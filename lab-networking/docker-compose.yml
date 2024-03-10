@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    container_name: lab-server
+    ports:
+      - "8000:80"
+    depends_on:
+      - web
+    networks:
+      - webnet
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: lab-web
+    volumes:
+      - ./web:/usr/src/app
+    networks:
+      - webnet
+      - commonnet
+  db:
+    image: postgres
+    container_name: lab-db
+    environment:
+      POSTGRES_DB: exampledb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    networks:
+      - dbnet
+      - commonnet
+
+networks:
+  webnet:
+  dbnet:
+  commonnet:

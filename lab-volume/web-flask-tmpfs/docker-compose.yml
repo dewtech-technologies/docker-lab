@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  flask-app:
+    image: python:3.8-slim
+    volumes:
+      - ./flask:/app
+    tmpfs:
+      - /tmp
+    working_dir: /app
+    command: /bin/sh -c "pip install Flask && python app.py"
+    ports:
+      - "5000:5000"

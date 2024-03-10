@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  webserver:
+    image: nginx:latest
+    container_name: lab-server
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lab-app
+    volumes:
+      - ./app:/usr/src/app
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/mydatabase
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    container_name: lab-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
